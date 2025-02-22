@@ -2,10 +2,10 @@ class CreateUsers < ActiveRecord::Migration[8.0]
   def change
     create_table :users do |t|
       t.string :full_name, null: false
-      t.string :email, null: false, unique: true
-      t.string :phone_number, null: false, unique: true
+      t.string :email, null: false
+      t.string :phone_number, null: false
       t.date :date_of_birth, null: false
-      t.string :national_id, null: false, unique: true
+      t.string :national_id, null: false
       t.string :kyc_type
       t.string :kyc_status, default: "pending" # Can be 'pending', 'verified', or 'rejected'
       t.string :profile_photo_url
