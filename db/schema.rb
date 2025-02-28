@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_28_114344) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_28_144037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -41,6 +41,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_114344) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_kycs_on_user_id"
+  end
+
+  create_table "mobile_money_transactions", force: :cascade do |t|
+    t.integer "account_id"
+    t.string "phone_number"
+    t.string "status"
+    t.string "provider_reference_id"
+    t.string "transaction_type"
+    t.decimal "amount"
+    t.string "currency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_mobile_money_transactions_on_account_id"
   end
 
   create_table "transactions", force: :cascade do |t|
@@ -74,6 +87,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_114344) do
 
   add_foreign_key "accounts", "users"
   add_foreign_key "kycs", "users"
+  add_foreign_key "mobile_money_transactions", "accounts"
   add_foreign_key "transactions", "accounts", column: "receiver_id"
   add_foreign_key "transactions", "accounts", column: "sender_id"
 end
