@@ -8,5 +8,7 @@ class CreateKyc < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
+    add_foreign_key :kycs, :users, column: :user_id
+    add_index :kycs, :user_id
   end
 end
