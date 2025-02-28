@@ -1,0 +1,40 @@
+class Api::V1::ExchangeRatesController < ApplicationController
+  before_action :find_exchange_rate, only: [ :update, :show ]
+  def index
+    @exchange_rates = ExchangeRate.all
+
+    render json: { status: "success", data: { exchange_rates: @exchange_rates } }
+  end
+
+  def create
+    @exchange_rate = ExchangeRate.new(exchange_rate_params)
+
+    if @exchange_rate.save
+      render json: { status: "success", data: { exchage_rate: @exchange_rate } }, status: :created
+    else
+      render json: { status: "fail", error: { message: "Couldn't create exchange rate" } }, status: :fail
+    end
+  end
+
+  def update
+    if @exchange_rate.update(exchange_rate_params)
+      render json: { status: "success", data: { exchange_rate: @exchange_rate } }
+    else
+      render json: { status: "fail", error: { message: "Couldn't update exchange rate" } }
+    end
+  end
+
+  def show
+    render json: { status: "success", data: { exchange_rate: @exchange_rate } }
+  end
+
+  private
+
+  def exchange_rate_params
+    params.require(:exchage_rate).permit(:base_currency, :target_currency, :rate)
+  end
+
+  def find_exchange_rate
+    @exchange_rate = ExchangeRate.find_by({ base_currency: params[:base_currency], target_currency: params[:target_currency] })
+  end
+end
