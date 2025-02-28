@@ -31,7 +31,7 @@ class Api::V1::ExchangeRatesController < ApplicationController
   private
 
   def exchange_rate_params
-    params.require(:exchage_rate).permit(:base_currency, :target_currency, :rate)
+    params.require(:exchange_rate).permit(:base_currency, :target_currency, :rate)
   end
 
   def find_exchange_rate
