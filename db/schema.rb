@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_28_112647) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_28_114344) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,6 +43,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_112647) do
     t.index ["user_id"], name: "index_kycs_on_user_id"
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.integer "sender_id"
+    t.integer "receiver_id"
+    t.decimal "amount_sent"
+    t.string "currency_sent"
+    t.decimal "amount_received"
+    t.string "received_currency"
+    t.decimal "fees"
+    t.string "fees_currency"
+    t.string "transaction_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_id"], name: "index_transactions_on_receiver_id"
+    t.index ["sender_id"], name: "index_transactions_on_sender_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "phone_number"
@@ -58,4 +74,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_112647) do
 
   add_foreign_key "accounts", "users"
   add_foreign_key "kycs", "users"
+  add_foreign_key "transactions", "accounts", column: "receiver_id"
+  add_foreign_key "transactions", "accounts", column: "sender_id"
 end
