@@ -1,5 +1,5 @@
 class Api::V1::ExchangeRatesController < ApplicationController
-  before_action :find_exchange_rate, only: [ :update, :show ]
+  before_action :find_exchange_rate, only: [ :update_one, :show_one ]
   def index
     @exchange_rates = ExchangeRate.all
 
