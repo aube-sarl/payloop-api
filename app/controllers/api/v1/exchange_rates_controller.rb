@@ -16,7 +16,7 @@ class Api::V1::ExchangeRatesController < ApplicationController
     end
   end
 
-  def update
+  def update_one
     if @exchange_rate.update(exchange_rate_params)
       render json: { status: "success", data: { exchange_rate: @exchange_rate } }
     else
@@ -24,7 +24,7 @@ class Api::V1::ExchangeRatesController < ApplicationController
     end
   end
 
-  def show
+  def show_one
     render json: { status: "success", data: { exchange_rate: @exchange_rate } }
   end
 
@@ -35,6 +35,6 @@ class Api::V1::ExchangeRatesController < ApplicationController
   end
 
   def find_exchange_rate
-    @exchange_rate = ExchangeRate.find(params[:id])
+    @exchange_rate = ExchangeRate.find({ base_currency: params[:base_currency], target_currency: params[:target_currency] })
   end
 end

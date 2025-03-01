@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   # root "posts#index"
   namespace :api do
     namespace :v1 do
-      resources :exchange_rates, only: [ :index, :create, :update, :show ]
+      resources :exchange_rates, only: [ :index, :create ]
+      put "exchange_rates/update_one", to: "exchange_rates#update_one"
+      get "exchange_rates/show_one", to: "exchange_rates#show_one"
     end
   end
 end
