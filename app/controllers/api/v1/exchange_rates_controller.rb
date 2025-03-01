@@ -36,5 +36,7 @@ class Api::V1::ExchangeRatesController < ApplicationController
 
   def find_exchange_rate
     @exchange_rate = ExchangeRate.find_by({ base_currency: params[:base_currency], target_currency: params[:target_currency] })
+  rescue ActiveRecord::RecordNotFound
+    render json: { status: "fail", error: { message: "No exchange rate found with base currency #{params[:base_currency]} and target currency #{params[:target_currency]}" } }, status: :not_found
   end
 end
