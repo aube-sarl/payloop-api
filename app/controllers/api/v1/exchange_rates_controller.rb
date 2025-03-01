@@ -35,6 +35,6 @@ class Api::V1::ExchangeRatesController < ApplicationController
   end
 
   def find_exchange_rate
-    @exchange_rate = ExchangeRate.find({ base_currency: params[:base_currency], target_currency: params[:target_currency] })
+    @exchange_rate = ExchangeRate.find_by({ base_currency: params[:base_currency], target_currency: params[:target_currency] })
   end
 end
