@@ -3,6 +3,8 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def create
+    @sender = Account.find(transaction_params[:sender_id])
+    @receiver = Account.find(transaction_params[:receiver_id])
   end
 
   def show
