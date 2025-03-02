@@ -5,6 +5,17 @@ class Api::V1::TransactionsController < ApplicationController
   def create
     @sender = Account.find(transaction_params[:sender_id])
     @receiver = Account.find(transaction_params[:receiver_id])
+  # verify sender balance
+  rescue @sender[:balance] < transaction_params[:amount_sent]
+    render json: { status: "fail", error: { message: { EN: "You don't have enough money to perform this transaction", FR: "Vous n'avez pas assez d'argent pour effectuer cette transaction, veuillez recharger votre compte" } } }, status: :unprocessable_entity
+  @transaction = Transaction.new(transaction_params)
+  if @transaction.save
+    @sender.update(balance: @sender[:balance] - transaction_params[:amount_sent] - transaction_params[:fees])
+    @receiver.update(balance: @receiver[:balance] + transaction_params[:amount_received])
+    render json: { status: "success", data: { new_balance: @sender[:balance], transaction: @transaction } }
+  else
+    render json: { status: "fail", error: { message: { EN: "Couldn't perform transaction!", FR: "Une erreur est survenue, transaction non aboutis!" } } }
+  end
   end
 
   def show
