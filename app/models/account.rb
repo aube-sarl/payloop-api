@@ -1,5 +1,5 @@
 class Account < ApplicationRecord
-  validates :currency, :presence: true
+  validates :currency, presence: true
   validates :linked_phone_number_provider, presence: true
   validates :linked_phone_number, presence: true
 
