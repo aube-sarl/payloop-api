@@ -16,3 +16,4 @@ class Api::V1::AccountsController < ApplicationController
     params.require(:account).permit(:user_id, :currency, :linked_phone_number_provider, :linked_phone_number)
   end
 end
+a

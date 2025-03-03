@@ -7,9 +7,16 @@ class Account < ApplicationRecord
   has_many :transactions, foreign_key: :sender_id
   has_many :transactions, foreign_key: :receiver_id
 
+  before_save: :capitalize_curreny
+  before_create: :set_balance_to_zero
+
   private
 
   def capitalize_curreny
     self.currency = self.currency.upcase
+  end
+
+  def set_balance_to_zero
+    self.balance = 0
   end
 end
