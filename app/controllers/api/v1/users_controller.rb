@@ -16,7 +16,7 @@ class Api::V1::UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      render json: { status: "success", message: { EN: "User successfully updated", FR: "Utilisateur mis à jour avec success." } }
+      render json: { status: "success", user: @user, message: { EN: "User successfully updated", FR: "Utilisateur mis à jour avec success." } }
     else
     end
   end
