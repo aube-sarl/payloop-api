@@ -14,6 +14,12 @@ class Api::V1::AccountsController < ApplicationController
     end
   end
 
+  def update
+  end
+
+  def show
+  end
+
   private
 
   def account_params
