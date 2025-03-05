@@ -31,4 +31,10 @@ class Api::V1::AccountsController < ApplicationController
   def account_params
     params.require(:account).permit(:user_id, :currency, :linked_phone_number_network, :linked_phone_number)
   end
+
+  def find_account
+    @account = Account.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { status: "fail", error: { message: { EN: "Account not found", FR: "Compte non trouvé." } } }
+  end
 end
