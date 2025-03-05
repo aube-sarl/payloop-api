@@ -38,7 +38,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def find_user
-    @user = User.find(params[:user_id])
+    @user = User.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { status: "fail", error: { message: { EN: "Couldn't find user.", FR: "N'a pas pu trouver l'utilisateur." } } }
   end
