@@ -1,7 +1,8 @@
 class Api::V1::UsersController < ApplicationController
+  before_action :find_user, only: [ :update, :destroy, :show ]
   def index
     @users = User.all
-    render json: {status: "success", data: {users: @users}}, status: :success
+    render json: { status: "success", data: { users: @users } }, status: :success
   end
 
   def create
@@ -9,8 +10,25 @@ class Api::V1::UsersController < ApplicationController
     if @user.save
       render json: { status: "success", data: { user: @user } }, status: :created
     else
-      render json: {status: "fail", error: { message: ""}}
+      render json: { status: "fail", error: { message: { EN: "Couldn't create user", FR: "N'a pas pu creer l'utilisateur" } } }, status: :unprocessable_entity
     end
+  end
+
+  def update
+    if @user.update(user_params)
+      render json: { status: "success", message: { EN: "User successfully updated", FR: "Utilisateur mis à jour avec success." } }
+    else
+    end
+  end
+
+  def show
+    render json: { status: "success", data: { user: @user } }
+  end
+
+  def destroy
+    @user.destroy
+  rescue ActiveRecord::RecordNotDestroyed
+    render json: { status: "fail", error: { message: { EN: "User not deleted", FR: "Utilisateur non supprimé" } } }, status: :unprocessable_entity
   end
 
   private
@@ -21,6 +39,7 @@ class Api::V1::UsersController < ApplicationController
 
   def find_user
     @user = User.find(params[:user_id])
-  rescue
+  rescue ActiveRecord::RecordNotFound
+    render json: { status: "fail", error: { message: { EN: "Couldn't find user.", FR: "N'a pas pu trouver l'utilisateur." } } }
   end
 end
