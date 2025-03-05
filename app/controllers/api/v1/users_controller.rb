@@ -2,7 +2,7 @@ class Api::V1::UsersController < ApplicationController
   before_action :find_user, only: [ :update, :destroy, :show ]
   def index
     @users = User.all
-    render json: { status: "success", data: { users: @users } }, status: :success
+    render json: { status: "success", data: { users: @users } }
   end
 
   def create
