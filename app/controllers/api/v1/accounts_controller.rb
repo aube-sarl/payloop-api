@@ -24,6 +24,7 @@ class Api::V1::AccountsController < ApplicationController
   end
 
   def show
+    render json: { status: "success", data: { account: @account } }
   end
 
   private
@@ -35,6 +36,6 @@ class Api::V1::AccountsController < ApplicationController
   def find_account
     @account = Account.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { status: "fail", error: { message: { EN: "Account not found", FR: "Compte non trouvé." } } }
+    render json: { status: "fail", error: { message: { EN: "Account not found", FR: "Compte non trouvé." } } }, status: :not_found
   end
 end
