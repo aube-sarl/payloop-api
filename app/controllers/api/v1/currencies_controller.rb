@@ -15,6 +15,14 @@ class Api::V1::CurrenciesController < ApplicationController
     end
   end
 
+  def update
+    if @currency.update(currency_params)
+      render json: { status: "success", data: { currency: @currency, message: { FR: "Devise mis a jour avec succes", EN: "Currency updated successfully." } } }
+    else
+      render json: { status: "fail", error: { message: { FR: "Devise non modifiee", EN: "Currency not updated" } } }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def currency_params
