@@ -1,4 +1,5 @@
 class Api::V1::ExchangeRatesController < ApplicationController
+  before_action :find_exchange_rate, only: [ :update ]
   def index
     @exchange_rates = ExchangeRate.include(:base_currency, :target_currency)
 
@@ -27,5 +28,11 @@ class Api::V1::ExchangeRatesController < ApplicationController
 
   def exchange_rate_params
     params.require(:exchange_rate).permit(:base_currency_id, :target_currency_id, :rate)
+  end
+
+  def find_exchange_rate
+    @exchange_rate = ExchangeRate.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { status: "fail", error: { message: { FR: "Taux d'echange non trouve", EN: "Exchange rate not found" } } }
   end
 end
