@@ -13,6 +13,7 @@ Rails.application.routes.draw do
         resources :accounts
       end
       resources :currencies, only: [ :update, :create, :index ]
+      resources :exchange_rates, only: [ :create, :update, :show, :index ]
     end
   end
 end
