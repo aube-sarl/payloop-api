@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :users do
         resources :accounts
       end
+      resources :currencies, only: [ :update, :create, :index ]
     end
   end
 end
