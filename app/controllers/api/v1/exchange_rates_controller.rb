@@ -1,9 +1,20 @@
 class Api::V1::ExchangeRatesController < ApplicationController
   before_action :find_exchange_rate, only: [ :update ]
   def index
-    @exchange_rates = ExchangeRate.include(:base_currency, :target_currency)
+    @exchange_rates = ExchangeRate.includes(:base_currency, :target_currency)
 
-    render json: { status: "success", data: { exchange_rates: @exchange_rates } }
+    render json: {
+      status: "success",
+      data: {
+        exchange_rates: @exchange_rates.as_json(
+          include: {
+            base_currency: { only: [ :id, :code, :name, :country ] },
+            target_currency: { only: [ :id, :code, :name, :country ] }
+          },
+          except: [ :created_at, :updated_at ]
+        )
+      }
+    }
   end
 
   def create
@@ -27,7 +38,7 @@ class Api::V1::ExchangeRatesController < ApplicationController
   private
 
   def exchange_rate_params
-    params.require(:exchange_rate).permit(:base_currency_id, :target_currency_id, :rate)
+    params.require(:exchange_rate).permit(:base_currency_id, :target_currency_id, :exchange_rate)
   end
 
   def find_exchange_rate
