@@ -1,5 +1,6 @@
 class Api::V1::ExchangeRatesController < ApplicationController
   before_action :find_exchange_rate, only: [ :update ]
+  before_action :find_exchange_rates_by_currencies, only: [ :update_exchange_rate_by_currencies  ]
   def index
     @exchange_rates = ExchangeRate.includes(:base_currency, :target_currency)
 
@@ -28,6 +29,16 @@ class Api::V1::ExchangeRatesController < ApplicationController
   end
 
   def update
+    update_exchange_rate
+  end
+
+  def update_exchange_rate_by_currencies 
+    update_exchange_rate
+  end
+
+  private
+
+  def update_exchange_rate
     if @exchange_rate.update(exchange_rate_params)
       render json: { status: "success", data: { exchange_rate: @exchange_rate, message: { FR: "Taux d'echange mis a jour", EN: "Exchange rate update." } } }
     else
@@ -35,7 +46,6 @@ class Api::V1::ExchangeRatesController < ApplicationController
     end
   end
 
-  private
 
   def exchange_rate_params
     params.require(:exchange_rate).permit(:base_currency_id, :target_currency_id, :exchange_rate)
@@ -45,5 +55,24 @@ class Api::V1::ExchangeRatesController < ApplicationController
     @exchange_rate = ExchangeRate.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { status: "fail", error: { message: { FR: "Taux d'echange non trouve", EN: "Exchange rate not found" } } }
+  end
+
+
+  def find_exchange_rates_by_currencies
+    base_currency = Currency.find_by(code: params[:base_currency])
+    target_currency = Currency.find_by(code: params[:target_currency])
+
+    if base_currency.nil? || target_currency.nil?
+      render json: { status: "fail", message: { FR: "Devises invalides", EN: "Invalid currencies" } }, status: :not_found
+      return
+    end
+
+    exchange_rate = ExchangeRate.find_by(base_currency_id: base_currency.id, target_currency_id: target_currency.id)
+
+    if exchange_rate
+      render json: { status: "success", data: { exchange_rate: exchange_rate } }
+    else
+      render json: { status: "fail", error: { message: { FR: "Taux d'échange non trouvé", EN: "Exchange rate not found" } } }, status: :not_found
+    end
   end
 end

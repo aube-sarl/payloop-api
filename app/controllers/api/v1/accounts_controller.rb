@@ -29,6 +29,7 @@ class Api::V1::AccountsController < ApplicationController
 
   private
 
+
   def account_params
     params.require(:account).permit(:user_id, :currency, :linked_phone_number_network, :linked_phone_number)
   end
@@ -37,23 +38,5 @@ class Api::V1::AccountsController < ApplicationController
     @account = Account.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { status: "fail", error: { message: { EN: "Account not found", FR: "Compte non trouvé." } } }, status: :not_found
-  end
-
-  def find_exchange_rates_by_currencies
-    base_currency = Currency.find_by(code: params[:base_currency])
-    target_currency = Currency.find_by(code: params[:target_currency])
-
-    if base_currency.nil? || target_currency.nil?
-      render json: { status: "fail", message: { FR: "Devises invalides", EN: "Invalid currencies" } }, status: :not_found
-      return
-    end
-
-    exchange_rate = ExchangeRate.find_by(base_currency_id: base_currency.id, target_currency_id: target_currency.id)
-
-    if exchange_rate
-      render json: { status: "success", data: { exchange_rate: exchange_rate } }
-    else
-      render json: { status: "fail", error: { message: { FR: "Taux d'échange non trouvé", EN: "Exchange rate not found" } } }, status: :not_found
-    end
   end
 end
