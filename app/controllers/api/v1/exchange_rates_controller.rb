@@ -32,7 +32,7 @@ class Api::V1::ExchangeRatesController < ApplicationController
     update_exchange_rate
   end
 
-  def update_exchange_rate_by_currencies 
+  def update_exchange_rate_by_currencies
     update_exchange_rate
   end
 
