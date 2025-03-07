@@ -40,11 +40,20 @@ class Api::V1::AccountsController < ApplicationController
   end
 
   def find_exchange_rates_by_currencies
-    base_currency = Currency.find_by({ code: params[:base_currency] })
-    target_currency = Currency.find_by({ code: params[:target_currency] })
-    render json: { status: "fail", message: { FR: "Devises invalides", EN: "Invalid currencies" } }, status: :not_found
-    @exchange_rate = ExchangeRate.find_by({ base_currency_id: base_currency[:id], target_currency_id: target_currency[:id] })
-  rescue ActiveRecord::RecordNotFound
-    render json: { status: "fail", error: { message: { FR: "Taux d'echange non trouvee", EN: "Exchange rate not foung" } } }, status: :not_found
+    base_currency = Currency.find_by(code: params[:base_currency])
+    target_currency = Currency.find_by(code: params[:target_currency])
+
+    if base_currency.nil? || target_currency.nil?
+      render json: { status: "fail", message: { FR: "Devises invalides", EN: "Invalid currencies" } }, status: :not_found
+      return
+    end
+
+    exchange_rate = ExchangeRate.find_by(base_currency_id: base_currency.id, target_currency_id: target_currency.id)
+
+    if exchange_rate
+      render json: { status: "success", data: { exchange_rate: exchange_rate } }
+    else
+      render json: { status: "fail", error: { message: { FR: "Taux d'échange non trouvé", EN: "Exchange rate not found" } } }, status: :not_found
+    end
   end
 end
