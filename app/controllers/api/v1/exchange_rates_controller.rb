@@ -67,11 +67,9 @@ class Api::V1::ExchangeRatesController < ApplicationController
       return
     end
 
-    exchange_rate = ExchangeRate.find_by(base_currency_id: base_currency.id, target_currency_id: target_currency.id)
+    @exchange_rate = ExchangeRate.find_by(base_currency_id: base_currency.id, target_currency_id: target_currency.id)
 
-    if exchange_rate
-      render json: { status: "success", data: { exchange_rate: exchange_rate } }
-    else
+    if @exchange_rate.nil?
       render json: { status: "fail", error: { message: { FR: "Taux d'échange non trouvé", EN: "Exchange rate not found" } } }, status: :not_found
     end
   end
