@@ -20,7 +20,7 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def update
-    if @transaction.update()
+    if @transaction.update({ status: transaction_params[:status] })
       render json: { status: "success", data: { transaction: @transaction } }
     else
       render json: { status: "fail", error: { message: { EN: "Transaction not updated", FR: "Transaction non mis a jour" } } }, status: :unprocessable_entity
@@ -30,7 +30,7 @@ class Api::V1::TransactionsController < ApplicationController
   private
 
   def transaction_params
-    params.require(:transaction).permit(:sender_id, :receiver_id, :amount_sent, :currency_sent, :amount_received, :currency_received, :fees, :currency_fees, :transaction_type)
+    params.require(:transaction).permit(:sender_id, :receiver_id, :amount_sent, :currency_sent, :amount_received, :currency_received, :fees, :currency_fees, :transaction_type, :status)
   end
 
   def find_transactions
