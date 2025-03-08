@@ -4,6 +4,8 @@ class Account < ApplicationRecord
   validates :linked_phone_number, presence: true
 
   belongs_to :user, foreign_key: :user_id
+  has_many :transactions, foreign_key: :sender_id
+  has_many :transactions, foreign_key: :receiver_id
 
   before_save :verify_if_currency_exists, :initialize_balance
 
