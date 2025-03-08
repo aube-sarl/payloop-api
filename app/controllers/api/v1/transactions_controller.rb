@@ -3,7 +3,7 @@ class Api::V1::TransactionsController < ApplicationController
   def index
     @transactions = Transaction.where(sender_id: params[:account_id]).or(Transaction.where(receiver_id: params[:account_id]))
 
-    render json: { status: "success", data: { transactions: @transactions.as_json(includes: { sender: }) } }
+    render json: { status: "success", data: { transactions: @transactions.as_json(includes: [ :sender, :receiver ]) } }
   end
 
   def create
