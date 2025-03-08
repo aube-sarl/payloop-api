@@ -6,6 +6,12 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def create
+    @Transaction = Transaction.new(transaction_params)
+    if @transaction.save
+      render json: { status: "success", data: { transaction: @transaction } }, status: :created
+    else
+      render json: { status: "fail", error: { message: { FR: "Transaction annnulee", EN: "Transaction aborted" } } }
+    end
   end
 
   def show
