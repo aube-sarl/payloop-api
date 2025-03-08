@@ -4,4 +4,12 @@ class Transaction < ApplicationRecord
 
   belongs_to :sender, class_name: "Account", foreign_key: "sender_id"
   belongs_to :receiver, class_name: "Account", foreign_key: "receiver_id"
+
+  before_create :initialize_status
+
+  private
+
+  def initialize_status
+    self.status = "pending"
+  end
 end
