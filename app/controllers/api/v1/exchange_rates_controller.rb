@@ -1,6 +1,6 @@
 class Api::V1::ExchangeRatesController < ApplicationController
   before_action :find_exchange_rate, only: [ :update ]
-  before_action :find_exchange_rates_by_currencies, only: [ :update_exchange_rate_by_currencies  ]
+  before_action :find_exchange_rates_by_currencies, only: [ :update_exchange_rate_by_currencies, :show_exchange_rate_by_currencies ]
   def index
     @exchange_rates = ExchangeRate.includes(:base_currency, :target_currency)
 
@@ -34,6 +34,15 @@ class Api::V1::ExchangeRatesController < ApplicationController
 
   def update_exchange_rate_by_currencies
     update_exchange_rate
+  end
+
+
+  def show_exchange_rate_by_currencies
+    render json: { status: "success", data: { exchange_rate: @exchange_rate } }
+  end
+
+  def show
+    render json: { status: "success", data: { exchange_rate: @exchange_rate } }
   end
 
   private
