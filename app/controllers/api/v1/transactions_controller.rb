@@ -15,6 +15,7 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def show
+    render json: { status: "success", data: { transaction: @transaction } }
   end
 
   def update
