@@ -1,7 +1,7 @@
 class Api::V1::AccountsController < ApplicationController
   before_action :find_account, only: [ :update, :show  ]
   def index
-    @accounts = Account.where({ user_id: params(:user_id) })
+    @accounts = Account.where({ user_id: params[:user_id] })
 
     render json: { status: "success", data: { accounts: @accounts } }
   end
