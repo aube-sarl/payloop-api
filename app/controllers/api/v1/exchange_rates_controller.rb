@@ -38,14 +38,24 @@ class Api::V1::ExchangeRatesController < ApplicationController
 
 
   def show_exchange_rate_by_currencies
-    render json: { status: "success", data: { exchange_rate: @exchange_rate } }
+    render_exchange_rate
   end
 
   def show
-    render json: { status: "success", data: { exchange_rate: @exchange_rate } }
+    render_exchange_rate
   end
 
   private
+
+  def render_exchange_rate
+    render json: { status: "success", data: { exchange_rate: @exchange_rate.as_json(
+      include: {
+        base_currency: { only: [ :id, :code, :name, :country ] },
+        target_currency: { only: [ :id, :code, :name, :country ] }
+      },
+      except: [ :created_at, :updated_at ]
+    ) } }
+  end
 
   def update_exchange_rate
     if @exchange_rate.update(exchange_rate_params)
