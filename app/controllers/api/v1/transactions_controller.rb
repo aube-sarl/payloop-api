@@ -18,6 +18,11 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def update
+    if @transaction.update()
+      render json: { status: "success", data: { transaction: @transaction } }
+    else
+      render json: { status: "fail", error: { message: { EN: "Transaction not updated", FR: "Transaction non mis a jour" } } }, status: :unprocessable_entity
+    end
   end
 
   private
