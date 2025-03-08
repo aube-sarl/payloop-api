@@ -2,7 +2,7 @@ class Api::V1::TransactionsController < ApplicationController
   def index
     @transactions = Transaction.where(sender_id: params[:account_id]).or(Transaction.where(receiver_id: params[:account_id]))
 
-    render json: { status: "success", data: { transactions: @transactions.as_json(includes: {sender: } ) } }
+    render json: { status: "success", data: { transactions: @transactions.as_json(includes: { sender: }) } }
   end
 
   def create
@@ -17,8 +17,12 @@ class Api::V1::TransactionsController < ApplicationController
   private
 
   def transaction_params
+    params.require(:transaction).permit(:sender_id, :receiver_id, :amount_sent, :currency_sent, :amount_received, :currency_received, :fees, :currency_fees, :transaction_type)
   end
 
   def find_transactions
+    @transaction = Transaction.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { status: "fail", error: { message: { EN: "Transaction not found", FR: "Transaction non trouvee" } } }
   end
 end
