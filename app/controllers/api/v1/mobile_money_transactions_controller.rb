@@ -9,6 +9,9 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
   def show
   end
 
+  def update
+  end
+
   def create
     @account = Account.find(mobile_money_transaction_params[:account_id])
     if @account.nil?
@@ -37,6 +40,7 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
     ActiveRecord::Base.transaction do
       @mobile_money_transaction = MobileMoneyTransaction.new(
       mobile_money_transaction_params.merge(transaction_type: "deposit"))
+    @account.update(balance: 0)
     @account.update(balance: @account[:balance] + mobile_money_transaction_params[:amount])
     render_created_mobile_money_transaction
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
@@ -81,6 +85,6 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
   end
 
   def mobile_money_transaction_params
-    params.require(:mobile_money_transaction).permit(:currency, :fees, :provider_reference_id, :transaction_type, :mobile_money_provider, :phone_number)
+    params.require(:mobile_money_transaction).permit(:currency, :fees, :provider_reference_id, :transaction_type, :mobile_money_provider, :phone_number, :account_id, :amount)
   end
 end
