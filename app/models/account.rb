@@ -7,7 +7,7 @@ class Account < ApplicationRecord
   has_many :transactions, foreign_key: :sender_id
   has_many :transactions, foreign_key: :receiver_id
 
-  before_save :verify_if_currency_exists, :initialize_balance
+  before_create :verify_if_currency_exists, :initialize_balance
 
   private
 
