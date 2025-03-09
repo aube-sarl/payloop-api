@@ -29,6 +29,17 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
   end
 
   def withdraw
+    account = Account.find(mobile_money_transaction_params[:account_id])
+    if account.nil?
+      render json: { status: "fail", error: { message: { FR: "Compte non trouve", EN: "Account not found" } } }, status: :not_found
+      return
+    end
+
+    if account[:balance] < mobile_money_transaction_params[:amount]
+      render json: { status: "fail", error: { message: { FR: "Vous n'avex pas assez d'argent pour effectuer ce retrait", EN: "Not enough funds to perform this withdrawall" } } }, status: :unprocessable_entity
+      return
+    end
+
     @mobile_money_transaction = MobileMoneyTransaction.new(
       mobile_money_transaction_params.merge(transaction_type: "withdraw"))
     render_created_mobile_money_transaction
