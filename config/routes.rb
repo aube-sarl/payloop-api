@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :users do
         resources :accounts do
           resources :transactions
+          resources :mobile_money_transactions
         end
       end
       patch "/exchange_rates/update_by_currencies", to: "exchange_rates#update_exchange_rate_by_currencies"

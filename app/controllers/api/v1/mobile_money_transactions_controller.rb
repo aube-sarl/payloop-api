@@ -6,6 +6,9 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
     render json: { status: "success", data: { mobile_money_transactions: @mobile_money_transactions } }
   end
 
+  def show
+  end
+
   def update
     if mobile_money_transaction_params[:transaction_type] == "top_up"
       top_up
@@ -20,6 +23,8 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
 
   def find_mobile_money_transaction
     @mobile_money_transaction = MobileMoneyTransaction.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { status: "fail", error: { message: { FR: "Transaction non trouvee", EN: "Transaction not found" } } }, status: :not_found
   end
 
   def top_up
