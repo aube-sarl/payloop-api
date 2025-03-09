@@ -9,7 +9,13 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
   def show
   end
 
-  def update
+  def create
+    @account = Account.find(mobile_money_transaction_params[:account_id])
+    if @account.nil?
+      render json: { status: "fail", error: { message: { FR: "Compte non trouve", EN: "Account not found" } } }, status: :not_found
+      return
+    end
+
     if mobile_money_transaction_params[:transaction_type] == "top_up"
       top_up
     elsif mobile_money_transaction_params[:transaction_type] == "withdraw"
@@ -30,16 +36,11 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
   def top_up
     @mobile_money_transaction = MobileMoneyTransaction.new(
       mobile_money_transaction_params.merge(transaction_type: "deposit"))
+    @account.update(balance: @account[:balance] + mobile_money_transaction_params[:amount])
     render_created_mobile_money_transaction
   end
 
   def withdraw
-    account = Account.find(mobile_money_transaction_params[:account_id])
-    if account.nil?
-      render json: { status: "fail", error: { message: { FR: "Compte non trouve", EN: "Account not found" } } }, status: :not_found
-      return
-    end
-
     if account[:balance] < mobile_money_transaction_params[:amount]
       render json: { status: "fail", error: { message: {
         "EN": "Your account balance is too low to complete this transaction.",
@@ -49,7 +50,8 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
 
     @mobile_money_transaction = MobileMoneyTransaction.new(
       mobile_money_transaction_params.merge(transaction_type: "withdraw"))
-    render_created_mobile_money_transaction
+      @account.update(balance: @account[:balance] - mobile_money_transaction_params[:amount])
+      render_created_mobile_money_transaction
   end
 
   def render_created_mobile_money_transaction
