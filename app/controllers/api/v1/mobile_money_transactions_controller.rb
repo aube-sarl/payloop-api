@@ -34,10 +34,19 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
   end
 
   def top_up
-    @mobile_money_transaction = MobileMoneyTransaction.new(
+    ActiveRecord::Base.transaction do
+      @mobile_money_transaction = MobileMoneyTransaction.new(
       mobile_money_transaction_params.merge(transaction_type: "deposit"))
     @account.update(balance: @account[:balance] + mobile_money_transaction_params[:amount])
     render_created_mobile_money_transaction
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+    # Handle validation errors
+    render json: { error: { message: { EN: "Transaction failed: #{e.message}", FR: "Transaction annullee, une erreur est survenue" } } }, status: :unprocessable_entity
+
+  rescue StandardError => e
+    # Handle any other unexpected errors
+    render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
+  end
   end
 
   def withdraw
@@ -48,10 +57,19 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
       return
     end
 
-    @mobile_money_transaction = MobileMoneyTransaction.new(
-      mobile_money_transaction_params.merge(transaction_type: "withdraw"))
-      @account.update(balance: @account[:balance] - mobile_money_transaction_params[:amount])
-      render_created_mobile_money_transaction
+    ActiveRecord::Base.transaction do
+      @mobile_money_transaction = MobileMoneyTransaction.new(
+        mobile_money_transaction_params.merge(transaction_type: "withdraw"))
+        @account.update(balance: @account[:balance] - mobile_money_transaction_params[:amount])
+        render_created_mobile_money_transaction
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+        # Handle validation errors
+        render json: { error: { message: { EN: "Transaction failed: #{e.message}", FR: "Transaction annullee, une erreur est survenue" } } }, status: :unprocessable_entity
+
+      rescue StandardError => e
+        # Handle any other unexpected errors
+        render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
+      end
   end
 
   def render_created_mobile_money_transaction
