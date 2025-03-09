@@ -7,16 +7,18 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def create
-    # select sender and receiver
-    @sender = Account.find(params[:sender_id])
-    receiver = Account.find(params[:receiver_id])
+    begin
+      # Select sender and receiver
+      @sender = Account.find(transaction_params[:sender_id])
+      @receiver = Account.find(transaction_params[:receiver_id])
 
-    # rescue from invalid sender of receiver.
-    if @sender.nil? || receiver.nil?
-      render json: { status: "fail", error: { message: { FR: "Envoyeur ou receiver invalide", EN: "Invalid sender or receiver." } } }, status: :not_found
+    rescue ActiveRecord::RecordNotFound
+      render json: {
+        status: "fail",
+        error: { message: { FR: "Envoyeur ou récepteur invalide", EN: "Invalid sender or receiver." } }
+      }, status: :not_found
       return
     end
-
 
     # rescue for balance less than transaction
     if @sender[:balance] < transaction_params[:amount_sent]
