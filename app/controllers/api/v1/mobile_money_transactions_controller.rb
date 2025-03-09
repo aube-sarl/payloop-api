@@ -36,7 +36,9 @@ class Api::V1::MobileMoneyTransactionsController < ApplicationController
     end
 
     if account[:balance] < mobile_money_transaction_params[:amount]
-      render json: { status: "fail", error: { message: { FR: "Vous n'avex pas assez d'argent pour effectuer ce retrait", EN: "Not enough funds to perform this withdrawall" } } }, status: :unprocessable_entity
+      render json: { status: "fail", error: { message: {
+        "EN": "Your account balance is too low to complete this transaction.",
+        "FR": "Votre solde est insuffisant pour effectuer cette transaction." } } }, status: :unprocessable_entity
       return
     end
 
