@@ -7,14 +7,53 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def create
-    @Transaction = Transaction.new(transaction_params)
-    if @transaction.save
-      render json: { status: "success", data: { transaction: @transaction } }, status: :created
-    else
-      render json: { status: "fail", error: { message: { FR: "Transaction annnulee", EN: "Transaction aborted" } } }
+    # select sender and receiver
+    @sender = Account.find(params[:sender_id])
+    receiver = Account.find(params[:receiver_id])
+
+    # rescue from invalid sender of receiver.
+    if @sender.nil? || receiver.nil?
+      render json: { status: "fail", error: { message: { FR: "Envoyeur ou receiver invalide", EN: "Invalid sender or receiver." } } }, status: :not_found
+      return
+    end
+
+
+    # rescue for balance less than transaction
+    if @sender[:balance] < transaction_params[:amount_sent]
+      render json: { status: "fail", error: {
+        message: {
+          FR: "Vous n'avez pas assez d'argent pour performer cette transaction! Veuillez recharger votre compte.",
+          EN: "You don't have enough money to make this transaction! Please top up your account."
+          }
+        }
+      }
+      return
+    end
+
+    begin
+      ActiveRecord::Base.transaction do
+        # Subtract sent amount from sender account
+        @sender.update!(balance: @sender[:balance] - transaction_params[:amount_sent])
+
+        # Add received amount to receiver account
+        @receiver.update!(balance: @receiver[:balance] + transaction_params[:amount_received])
+
+        # Save transaction record
+        @transaction = Transaction.create!(transaction_params)
+      end
+
+      # If everything goes well
+      render json: { status: "success", data: { message: "Transaction successful", transaction: @transaction } }, status: :ok
+
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+      # Handle validation errors
+      render json: { error: { message: { EN: "Transaction failed: #{e.message}", FR: "Transaction annullee, une erreur est survenue" } } }, status: :unprocessable_entity
+
+    rescue StandardError => e
+      # Handle any other unexpected errors
+      render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
     end
   end
-
   def show
     render json: { status: "success", data: { transaction: @transaction } }
   end
