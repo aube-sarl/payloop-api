@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_08_192103) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_09_070240) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,6 +44,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_08_192103) do
     t.index ["target_currency_id"], name: "index_exchange_rates_on_target_currency_id"
   end
 
+  create_table "mobile_money_transactions", force: :cascade do |t|
+    t.decimal "amount"
+    t.string "currency"
+    t.decimal "fees"
+    t.string "provider_reference_id"
+    t.string "status"
+    t.string "transaction_type"
+    t.integer "account_id"
+    t.string "mobile_money_provider"
+    t.string "phone_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_mobile_money_transactions_on_account_id"
+  end
+
   create_table "transactions", force: :cascade do |t|
     t.integer "sender_id"
     t.decimal "amount_sent"
@@ -74,6 +89,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_08_192103) do
   add_foreign_key "accounts", "users"
   add_foreign_key "exchange_rates", "currencies", column: "base_currency_id"
   add_foreign_key "exchange_rates", "currencies", column: "target_currency_id"
+  add_foreign_key "mobile_money_transactions", "accounts"
   add_foreign_key "transactions", "accounts", column: "receiver_id"
   add_foreign_key "transactions", "accounts", column: "sender_id"
 end
