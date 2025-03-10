@@ -71,7 +71,7 @@ class Api::V1::TransactionsController < ApplicationController
   private
 
   def transaction_params
-    params.require(:transaction).permit(:sender_id, :receiver_id, :amount_sent, :currency_sent, :amount_received, :currency_received, :fees, :currency_fees, :transaction_type, :status)
+    params.require(:transaction).permit(:sender_id, :receiver_id, :amount_sent, :currency_sent, :amount_received, :currency_received, :fees, :currency_fees, :transaction_type)
   end
 
   def find_transactions
