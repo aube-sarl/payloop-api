@@ -1,5 +1,6 @@
 class Api::V1::TransactionsController < ApplicationController
   before_action :find_transactions, only: [ :show, :update ]
+  after_create_commit :broadcast_transaction
   def index
     @transactions = Transaction.where(sender_id: params[:account_id]).or(Transaction.where(receiver_id: params[:account_id]))
 
@@ -78,5 +79,10 @@ class Api::V1::TransactionsController < ApplicationController
     @transaction = Transaction.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { status: "fail", error: { message: { EN: "Transaction not found", FR: "Transaction non trouvee" } } }
+  end
+
+  def broadcast_transaction
+    ActionCable.server.broadcast("transaction_channel_#{sender_id}", self)
+    ActionCable.server.broadcast("transaction_channel_#{receiver_id}", self)
   end
 end
