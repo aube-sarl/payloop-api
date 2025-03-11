@@ -82,7 +82,7 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def broadcast_transaction
-    ActionCable.server.broadcast("transaction_channel_#{sender_id}", self)
-    ActionCable.server.broadcast("transaction_channel_#{receiver_id}", self)
+    ActionCable.server.broadcast("transaction_channel_#{self.sender_id}", self)
+    ActionCable.server.broadcast("transaction_channel_#{self.receiver_id}", self)
   end
 end
