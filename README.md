@@ -1,24 +1,35 @@
-# README
+<img width="1271" height="1276" alt="payloop" src="https://github.com/user-attachments/assets/23f36e82-3031-41a5-86fa-5ad8a4d0c066" />
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# PayLoop
 
-Things you may want to cover:
+PayLoop is a cross-border payment system that integrates with **Airtel Money, MTN Mobile Money, M-Pesa, and other mobile money APIs**.  
+It enables users and businesses to send and receive money seamlessly across East African countries.  
 
-* Ruby version
+## 🚀 Features
+- Integration with multiple mobile money providers (Airtel Money, MTN, M-Pesa).
+- Secure authentication and transaction signing.
+- Currency conversion and transaction fees handling.
+- Audit logging and compliance checks.
+- Scalable API for third-party integrations.
 
-* System dependencies
+## 🛠️ Tech Stack
+- Ruby on Rails (API backend)
+- PostgreSQL
+- Redis & Sidekiq (background jobs)
+- Docker
+- JWT authentication & encryption
+- RSpec (tests)
 
-* Configuration
+## ⚙️ Setup & Run
+```bash
+# Install dependencies
+bundle install
 
-* Database creation
+# Setup database
+rails db:create db:migrate db:seed
 
-* Database initialization
+# Run background jobs
+bundle exec sidekiq
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+# Run server
+rails s
