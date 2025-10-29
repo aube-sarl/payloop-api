@@ -7,18 +7,4 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  namespace :api do
-    namespace :v1 do
-      resources :users do
-        resources :accounts do
-          resources :transactions
-          resources :mobile_money_transactions
-        end
-      end
-      patch "/exchange_rates/update_by_currencies", to: "exchange_rates#update_exchange_rate_by_currencies"
-      get "exchange_rates/get_by_currencies", to: "exchange_rates#show_exchange_rate_by_currencies"
-      resources :currencies, only: [ :update, :create, :index ]
-      resources :exchange_rates, only: [ :create, :update, :show, :index ]
-    end
-  end
 end
