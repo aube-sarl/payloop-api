@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :find_user, only: [ :edit, :update, :show, :destory ]
+  before_action :find_user, only: [ :update, :show, :destroy ]
   def index
     @users = User.all
     render json: { data: { users: @users }, status: :ok, message: "Users retreived successfully!" }, status: :ok
@@ -12,16 +12,23 @@ class Api::V1::UsersController < ApplicationController
   def create
   end
 
-  private
+  def new
+    @user = User.new
+  end
 
-  def find_user
-    @user = User.find(params[:id])
+  def update
   end
 
   def destroy
     @user.destroy
   rescue ActiveRecord::RecordNotFound
     render json: { error: { message: "user not found" }, status: :not_found }, status: :not_found
+  end
+
+  private
+
+  def find_user
+    @user = User.find(params[:id])
   end
 
   def user_params
