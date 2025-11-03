@@ -22,6 +22,10 @@ class Api::V1::CurrenciesController < ApplicationController
     end
   end
 
+  def destory
+    @currency.destroy
+  end
+
   private
 
   def find_currency
