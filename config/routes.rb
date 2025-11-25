@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: [ :index, :show, :create, :update, :destroy ]
       resources :currencies, only: [ :index, :update, :show, :destroy, :create ]
+      resources :accounts, only: [ :index, :create, :destroy, :update ]
     end
   end
 end

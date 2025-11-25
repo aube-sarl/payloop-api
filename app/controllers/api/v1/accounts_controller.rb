@@ -17,6 +17,10 @@ class Api::V1::AccountsController < ApplicationController
     end
   end
 
+  def delete
+    @account.destroy
+  end
+
   private
 
   def find_account
