@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_03_194901) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_25_090750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "account_number", null: false
+    t.string "currency_code", null: false
+    t.decimal "balance", precision: 15, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_number"], name: "index_accounts_on_account_number", unique: true
+    t.index ["currency_code"], name: "index_accounts_on_currency_code"
+    t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
 
   create_table "currencies", primary_key: "code", id: :string, force: :cascade do |t|
     t.string "name"
@@ -30,4 +42,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_194901) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "accounts", "currencies", column: "currency_code", primary_key: "code"
+  add_foreign_key "accounts", "users"
 end
