@@ -39,6 +39,6 @@ class Api::V1::CurrenciesController < ApplicationController
   end
 
   def currency_params
-    params.require(:currency).permit(:code, :name, :symbol)
+    params.require(:currency).permit(:code, :name, :symbol, :exchange_rate)
   end
 end
