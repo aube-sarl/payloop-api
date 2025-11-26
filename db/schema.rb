@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_26_063420) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_26_080307) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,6 +44,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_26_063420) do
     t.decimal "exchange_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "transaction_fees"
+    t.string "status"
     t.index ["receiver_account_id"], name: "index_transactions_on_receiver_account_id"
     t.index ["sender_account_id"], name: "index_transactions_on_sender_account_id"
   end
