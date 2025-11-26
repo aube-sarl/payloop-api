@@ -13,7 +13,12 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def new
-    @user = User.new
+    @user = User.new(user_params)
+    if @user.save
+      render json: { data: { user: @user, message: "User successfully created!" }, status: :created }, status: :created
+    else
+      render json: { error: { message: @user.errors.full_messages.join(", ") }, status: :unprocessable_entity }, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -32,6 +37,6 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:firstname, :middlename, :lastname, :email)
+    params.require(:user).permit(:first_name, :middle_name, :lastname, :email)
   end
 end
