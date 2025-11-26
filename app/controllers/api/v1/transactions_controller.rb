@@ -1,5 +1,5 @@
 class Api::V1::TransactionsController < ApplicationController
-  before_action
+  before_action :set_transaction, only: [ :show, :update ]
   def index
     @transactions = Transaction.all
     render json: { data: { transactions: @transactions, message: "Transactions successfully retrieved!" } }, status: :ok
@@ -22,7 +22,20 @@ class Api::V1::TransactionsController < ApplicationController
     end
   end
 
+  def show
+    render json: { data: { transaction: @transaction, message: "Transaction successfully retrieved!" }, status: :ok }, status: :ok
+  end
+
+  def update
+    if @transaction.update(transaction_params)
+      render json: { data: { transaction: @transaction, message: "Transaction successfully updated!" } }, status: :ok
+    else
+      render json: { error: { message: @transaction.errors.full_messages.join(", ") }, status: :unprocessable_entity }, status: :unprocessable_entity
+    end
+  end
+
   private
+
   def transaction_params
     params.require(:transaction).permit(:sender_account_id, :receiver_account_id, :amount_sent, :amount_received, :exchange_rate, :transaction_fees, :status)
   end
