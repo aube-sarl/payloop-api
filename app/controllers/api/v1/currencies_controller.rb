@@ -20,7 +20,7 @@ class Api::V1::CurrenciesController < ApplicationController
 
   def update
     if @currency.update(currency_params)
-      render json: { data: { currency: @currency }, status: :ok, message: }, status: :ok
+      render json: { data: { currency: @currency }, status: :ok, message: "Currency updated successfully!" }, status: :ok
     else
       render json: { error: { message: @currency.errors.full_messages }, status: :unprocessable_entity }, status: :unprocessable_entity
     end
@@ -33,9 +33,9 @@ class Api::V1::CurrenciesController < ApplicationController
   private
 
   def find_currency
-    @currency = Currency.find(params[:code])
+    @currency = Currency.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: { message: "Currency not found" }, status: :not_found }, status: :not_found
+    render json: { error: { message: "Currency not found", params: params[:id] }, status: :not_found }, status: :not_found
   end
 
   def currency_params
