@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_25_141455) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_26_063420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,6 +34,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_141455) do
     t.decimal "exchange_rate"
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.integer "sender_account_id"
+    t.integer "receiver_account_id"
+    t.decimal "amount_sent"
+    t.decimal "amount_received"
+    t.decimal "sender_initial_balance"
+    t.decimal "receiver_initial_balance"
+    t.decimal "exchange_rate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_account_id"], name: "index_transactions_on_receiver_account_id"
+    t.index ["sender_account_id"], name: "index_transactions_on_sender_account_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "firstname"
     t.string "lastname"
@@ -46,4 +60,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_141455) do
 
   add_foreign_key "accounts", "currencies", column: "currency_code", primary_key: "code"
   add_foreign_key "accounts", "users"
+  add_foreign_key "transactions", "accounts", column: "receiver_account_id"
+  add_foreign_key "transactions", "accounts", column: "sender_account_id"
 end
